@@ -6,6 +6,7 @@ use App\Adapters\Log\MonologLogger;
 use App\Http\Controllers\ProductController;
 use Core\Infra\Log\Logger;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
+use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
 use Core\Modules\Product\Infra\Repositories\EloquentProductRepository;
 use Illuminate\Contracts\Foundation\Application;
@@ -26,9 +27,16 @@ class ProductServiceProvider extends ServiceProvider
                 $app->make(ProductRepository::class)
             );
         });
+        $this->app->bind(ListProductsUseCase::class, function (Application $app) {
+            return new ListProductsUseCase(
+                $app->make(Logger::class),
+                $app->make(ProductRepository::class)
+            );
+        });
         $this->app->bind(ProductController::class, function (Application $app) {
             return new ProductController(
-                $app->make(CreateProductUseCase::class)
+                $app->make(CreateProductUseCase::class),
+                $app->make(ListProductsUseCase::class)
             );
         });
     }

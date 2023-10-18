@@ -7,8 +7,8 @@ use App\Http\Resources\ProductResource;
 use App\Models\ProductModel;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductInput;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
+use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -16,25 +16,25 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function __construct(
-        private readonly CreateProductUseCase $createProductUseCase
+        private readonly CreateProductUseCase $createProductUseCase,
+        private readonly ListProductsUseCase  $listProductsUseCase
     )
     {
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        try {
+            $products = $this->listProductsUseCase->execute();
+            return ProductResource::collection($products);
+        } catch (Exception $exception) {
+            Log::error('Error to process request: ' . $exception->getMessage());
+            return response()->abort(500);
+        }
     }
 
-
-    /**
-     * @param StoreProductRequest $request
-     * @return JsonResponse|ProductResource<ProductModel>
-     */
-    public function store(StoreProductRequest $request): JsonResponse|ProductResource
+    public function store(StoreProductRequest $request)
     {
         $validated = $request->validated();
         try {

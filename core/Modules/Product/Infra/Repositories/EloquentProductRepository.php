@@ -4,6 +4,7 @@ namespace Core\Modules\Product\Infra\Repositories;
 
 use App\Models\ProductModel;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
+use Illuminate\Support\Collection;
 
 class EloquentProductRepository implements ProductRepository
 {
@@ -21,5 +22,10 @@ class EloquentProductRepository implements ProductRepository
     {
         $foundProducts = ProductModel::where('name', $name)->get();
         return $foundProducts->first();
+    }
+
+    public function list(): Collection
+    {
+        return ProductModel::all();
     }
 }

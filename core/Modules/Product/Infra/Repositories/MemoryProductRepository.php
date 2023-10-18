@@ -45,4 +45,9 @@ final class MemoryProductRepository implements ProductRepository
             return $product->name == $name;
         });
     }
+
+    public function list(): Collection
+    {
+        return $this->products;
+    }
 }
