@@ -8,6 +8,7 @@ use App\Models\ProductModel;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductInput;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
 use Core\Modules\Product\Application\UseCases\Delete\DeleteProductUseCase;
+use Core\Modules\Product\Application\UseCases\GetById\GetProductByIdUseCase;
 use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
 use Core\Modules\Shared\Domain\Exceptions\EntityNotFoundException;
 use Exception;
@@ -17,9 +18,10 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     public function __construct(
-        private readonly CreateProductUseCase $createProductUseCase,
-        private readonly ListProductsUseCase  $listProductsUseCase,
-        private readonly DeleteProductUseCase $deleteProductUseCase
+        private readonly CreateProductUseCase  $createProductUseCase,
+        private readonly ListProductsUseCase   $listProductsUseCase,
+        private readonly DeleteProductUseCase  $deleteProductUseCase,
+        private readonly GetProductByIdUseCase $getProductByIdUseCase,
     )
     {
     }
@@ -40,7 +42,7 @@ class ProductController extends Controller
         $validated = $request->validated();
         try {
             if (!$request->hasFile('photo')) {
-                return response()->json("photo is required");
+                return response()->json("photo is required", 422);
             }
             $photo = $request->file('photo');
             $path = $photo->store('images/products', 'public');
@@ -54,12 +56,15 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ProductModel $product)
+
+    public function show(int $id)
     {
-        //
+        try {
+            $foundProduct = $this->getProductByIdUseCase->execute($id);
+            return new ProductResource($foundProduct);
+        } catch (Exception $exception) {
+            $this->internalServerError($exception);
+        }
     }
 
     /**
