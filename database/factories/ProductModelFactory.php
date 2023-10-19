@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\BaseModel;
 use App\Models\ProductModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,9 +19,9 @@ class ProductModelFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->name();
-        $price = $this->faker->randomFloat(2);
-        $photo = $this->faker->imageUrl();
+        $name = fake()->name();
+        $price = fake()->randomFloat(2);
+        $photo = fake()->imageUrl();
         return [
             'name' => $name,
             'price' => $price,

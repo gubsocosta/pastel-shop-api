@@ -26,7 +26,19 @@ interface ProductRepository
     public function findByName(string $name): ProductModel|null;
 
     /**
+     * @param int $id
+     * @return ProductModel|null
+     */
+    public function findById(int $id): ProductModel|null;
+
+    /**
      * @return Collection<ProductModel>
      */
     public function list(): Collection;
+
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function delete(int $id): void;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Core\Modules\Product\Application\UseCases\List;
+namespace Tests\Unit\Core\Modules\Product\Application\UseCases;
 
 use App\Models\ProductModel;
 use Core\Infra\Log\Logger;
@@ -9,7 +9,7 @@ use Core\Modules\Product\Domain\Repositories\ProductRepository;
 use Exception;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\Exception as PHPUnitException;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ListProductsUseCaseTest extends TestCase
 {
@@ -51,7 +51,7 @@ class ListProductsUseCaseTest extends TestCase
     protected function mockProductRepository(Collection $products): ProductRepository
     {
         $productRepository = $this->getMockBuilder(ProductRepository::class)->getMock();
-        $productRepository->expects($this->any())
+        $productRepository->expects($this->once())
             ->method('list')
             ->willReturn($products);
         return $productRepository;
