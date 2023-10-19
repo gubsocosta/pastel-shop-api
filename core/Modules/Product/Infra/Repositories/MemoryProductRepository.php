@@ -5,6 +5,7 @@ namespace Core\Modules\Product\Infra\Repositories;
 use App\Models\ProductModel;
 use Core\Modules\Product\Domain\Exceptions\ProductNameHasAlreadyBeenUsedException;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
+use DateTime;
 use Illuminate\Support\Collection;
 
 final class MemoryProductRepository implements ProductRepository
@@ -49,5 +50,21 @@ final class MemoryProductRepository implements ProductRepository
     public function list(): Collection
     {
         return $this->products;
+    }
+
+    public function findById(int $id): ProductModel|null
+    {
+        return $this->products->first(function (ProductModel $product) use ($id) {
+            return $product->id == $id;
+        });
+    }
+
+    public function delete(int $id): void
+    {
+        $this->products->map(function (ProductModel $model) use($id) {
+            if($model->id == $id) {
+                $model->deleted_at = new Datetime('now');
+            }
+        });
     }
 }

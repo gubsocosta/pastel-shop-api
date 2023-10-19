@@ -28,4 +28,14 @@ class EloquentProductRepository implements ProductRepository
     {
         return ProductModel::all();
     }
+
+    public function findById(int $id): ProductModel|null
+    {
+       return ProductModel::find($id);
+    }
+
+    public function delete(int $id): void
+    {
+        ProductModel::destroy($id);
+    }
 }

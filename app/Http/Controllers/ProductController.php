@@ -7,17 +7,19 @@ use App\Http\Resources\ProductResource;
 use App\Models\ProductModel;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductInput;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
+use Core\Modules\Product\Application\UseCases\Delete\DeleteProductUseCase;
 use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
+use Core\Modules\Shared\Domain\Exceptions\EntityNotFoundException;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function __construct(
         private readonly CreateProductUseCase $createProductUseCase,
-        private readonly ListProductsUseCase  $listProductsUseCase
+        private readonly ListProductsUseCase  $listProductsUseCase,
+        private readonly DeleteProductUseCase $deleteProductUseCase
     )
     {
     }
@@ -29,8 +31,7 @@ class ProductController extends Controller
             $products = $this->listProductsUseCase->execute();
             return ProductResource::collection($products);
         } catch (Exception $exception) {
-            Log::error('Error to process request: ' . $exception->getMessage());
-            return response()->abort(500);
+            $this->internalServerError($exception);
         }
     }
 
@@ -49,8 +50,7 @@ class ProductController extends Controller
             $newProduct = $this->createProductUseCase->execute(new CreateProductInput($name, $price, $fullPathPhoto));
             return new ProductResource($newProduct);
         } catch (Exception $exception) {
-            Log::error('Error to process request: ' . $exception->getMessage());
-            return response()->abort(500);
+            $this->internalServerError($exception);
         }
     }
 
@@ -70,11 +70,15 @@ class ProductController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ProductModel $product)
+    public function destroy(int $id)
     {
-        //
+        try {
+            $this->deleteProductUseCase->execute($id);
+            return response()->json("", 204);
+        } catch (EntityNotFoundException $exception) {
+            $this->notFound($exception);
+        } catch (Exception $exception) {
+            $this->internalServerError($exception);
+        }
     }
 }
