@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use Core\Infra\Log\Logger;
 use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
 use Core\Modules\Product\Application\UseCases\Delete\DeleteProductUseCase;
+use Core\Modules\Product\Application\UseCases\GetById\GetProductByIdUseCase;
 use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
 use Core\Modules\Product\Infra\Repositories\EloquentProductRepository;
@@ -40,11 +41,18 @@ class ProductServiceProvider extends ServiceProvider
                 $app->make(ProductRepository::class)
             );
         });
+        $this->app->bind(GetProductByIdUseCase::class, function (Application $app) {
+            return new GetProductByIdUseCase(
+                $app->make(Logger::class),
+                $app->make(ProductRepository::class)
+            );
+        });
         $this->app->bind(ProductController::class, function (Application $app) {
             return new ProductController(
                 $app->make(CreateProductUseCase::class),
                 $app->make(ListProductsUseCase::class),
                 $app->make(DeleteProductUseCase::class),
+                $app->make(GetProductByIdUseCase::class),
             );
         });
     }
