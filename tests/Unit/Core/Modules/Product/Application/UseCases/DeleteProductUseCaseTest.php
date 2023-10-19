@@ -7,14 +7,11 @@ use Core\Infra\Log\Logger;
 use Core\Modules\Product\Application\UseCases\Delete\DeleteProductUseCase;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
 use Core\Modules\Shared\Domain\Exceptions\EntityNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class DeleteProductUseCaseTest extends TestCase
 {
-
-    use RefreshDatabase;
 
     /**
      * @throws Exception
@@ -39,7 +36,7 @@ class DeleteProductUseCaseTest extends TestCase
     protected function mockProductRepository(ProductModel $product): ProductRepository
     {
         $productRepository = $this->getMockBuilder(ProductRepository::class)->getMock();
-        $productRepository->expects($this->any())
+        $productRepository->expects($this->once())
             ->method('findById')
             ->with(1)
             ->willReturn($product);

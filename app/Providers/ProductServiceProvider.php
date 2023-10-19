@@ -9,6 +9,7 @@ use Core\Modules\Product\Application\UseCases\Create\CreateProductUseCase;
 use Core\Modules\Product\Application\UseCases\Delete\DeleteProductUseCase;
 use Core\Modules\Product\Application\UseCases\GetById\GetProductByIdUseCase;
 use Core\Modules\Product\Application\UseCases\List\ListProductsUseCase;
+use Core\Modules\Product\Application\UseCases\Update\UpdateProductUseCase;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
 use Core\Modules\Product\Infra\Repositories\EloquentProductRepository;
 use Illuminate\Contracts\Foundation\Application;
@@ -47,12 +48,19 @@ class ProductServiceProvider extends ServiceProvider
                 $app->make(ProductRepository::class)
             );
         });
+        $this->app->bind(UpdateProductUseCase::class, function (Application $app) {
+            return new UpdateProductUseCase(
+                $app->make(Logger::class),
+                $app->make(ProductRepository::class)
+            );
+        });
         $this->app->bind(ProductController::class, function (Application $app) {
             return new ProductController(
                 $app->make(CreateProductUseCase::class),
                 $app->make(ListProductsUseCase::class),
                 $app->make(DeleteProductUseCase::class),
                 $app->make(GetProductByIdUseCase::class),
+                $app->make(UpdateProductUseCase::class),
             );
         });
     }

@@ -27,7 +27,6 @@ final class DeleteProductUseCase
                 throw new EntityNotFoundException('product');
             }
             $this->productRepository->delete($id);
-
         } catch (Exception $exception) {
             $this->logger->error('Error to delete product: ' . $exception->getMessage());
             throw $exception;

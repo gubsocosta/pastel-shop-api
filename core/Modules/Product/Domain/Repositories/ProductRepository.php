@@ -13,17 +13,13 @@ interface ProductRepository
      * @param string $photo
      * @return ProductModel
      */
-    public function create(
-        string $name,
-        float  $price,
-        string $photo
-    ): ProductModel;
+    public function create(string $name, float $price, string $photo): ProductModel;
 
     /**
-     * @param string $name
-     * @return ProductModel|null
+     * @return Collection<ProductModel>
      */
-    public function findByName(string $name): ProductModel|null;
+    public function list(): Collection;
+
 
     /**
      * @param int $id
@@ -32,9 +28,13 @@ interface ProductRepository
     public function findById(int $id): ProductModel|null;
 
     /**
-     * @return Collection<ProductModel>
+     * @param int $id
+     * @param string $name
+     * @param float $price
+     * @param string $photo
+     * @return ProductModel
      */
-    public function list(): Collection;
+    public function updateById(int $id, string $name, float $price, string $photo): ProductModel;
 
     /**
      * @param int $id

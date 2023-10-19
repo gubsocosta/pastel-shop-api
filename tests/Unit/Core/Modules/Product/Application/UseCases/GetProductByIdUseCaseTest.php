@@ -7,7 +7,7 @@ use App\Models\ProductModel;
 use Core\Infra\Log\Logger;
 use Core\Modules\Product\Application\UseCases\GetById\GetProductByIdUseCase;
 use Core\Modules\Product\Domain\Repositories\ProductRepository;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class GetProductByIdUseCaseTest extends TestCase
 {
